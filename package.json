@@ -1,25 +1,32 @@
 {
-  "name": "arkanjs",
+  "name": "arkanjs-api",
   "version": "1.0.0",
+  "description": "Modular API generator with RBAC, flexible DB support and CLI integration",
+  "main": "src/server.js",
   "type": "module",
-  "description": "ArkanJS - Modular APIs generator with Express and Sequelize",
   "scripts": {
+    "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "format": "prettier --write ."
+    "generate:auth": "node scripts/generateAuth.js",
+    "generate:env": "node scripts/generateEnv.js",
+    "generate:resource": "node scripts/generateResource.js",
+    "generate:resource-auth": "node scripts/generateResourceAuth.js",
+    "init": "node scripts/initProject.js"
   },
+  "keywords": ["express", "sequelize", "rbac", "cli", "generator", "api"],
+  "author": "Iberno & Copilot",
+  "license": "MIT",
   "dependencies": {
-    "commander": "^11.0.0",
-    "dotenv": "^16.4.0",
-    "ejs": "^3.1.9",
-    "express": "^4.18.2",
-    "inquirer": "^9.2.7",
+    "bcrypt": "^5.1.0",
+    "commander": "^11.1.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "marked": "^9.1.6",
-    "sequelize": "^6.32.1",
-    "sqlite3": "^5.1.6"
+    "marked": "^9.1.4",
+    "sequelize": "^6.35.1",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22",
-    "prettier": "^3.2.5"
+    "nodemon": "^3.1.0"
   }
 }
