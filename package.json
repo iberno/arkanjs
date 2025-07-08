@@ -1,9 +1,12 @@
 {
   "name": "@ibernoh/arkanjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Modular API generator with RBAC, flexible DB support and CLI integration",
   "main": "src/server.js",
   "type": "module",
+  "bin": {
+    "arkan": "./scripts/cli.js"
+  },
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
@@ -30,3 +33,4 @@
     "nodemon": "^3.1.0"
   }
 }
+

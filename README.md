@@ -32,8 +32,8 @@ NPM
 npx arkan init --install --name projectName
 
 ```bash
-git clone https://github.com/SEU_USUARIO/arkanjs-api
-cd arkanjs-api
+git clone https://github.com/iberno/arkanjs
+cd arkanjs
 npm install
 npm run init
 🔧 Development Kit
