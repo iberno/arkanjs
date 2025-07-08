@@ -7,20 +7,12 @@ import { generateResourceAuth } from "../scripts/generateResourceAuth.js";
 
 // 🎯 Comando: init
 program
-  .command("init")
-  .description("Inicializa servidor Express + Sequelize com estrutura base")
-  .option("--install", "Cria arquivos e diretórios iniciais para API limpa")
-  .option("--no-docs", "Evita gerar o Doc.md e rota /doc")
-  .option("--name <nome>", "Define o nome do projeto para configurar package.json")
-  .action((options) => {
-    if (options.install) {
-      const nomeProjeto = options.name || "arkanjs-api";
-      initProject({ noDocs: options.noDocs, nomeProjeto });
-    } else {
-      console.log("ℹ️ Use --install para gerar a estrutura inicial.");
-    }
+  .command("new <name>")
+  .description("Cria projeto ArkanJS com estrutura pronta para uso")
+  .option("--no-docs", "Evita gerar Doc.md e rota /doc")
+  .action((name, options) => {
+    initProject({ noDocs: options.noDocs, nomeProjeto: name });
   });
-
 
 // ⚙️ Comando: generate:resource
 program
