@@ -1,5 +1,5 @@
 {
-  "name": "arkanjs",
+  "name": "arkanjs-api",
   "version": "0.1.0",
   "description": "Modular API generator with RBAC, flexible DB support and CLI integration",
   "main": "src/server.js",
