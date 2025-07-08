@@ -1,5 +1,5 @@
 {
-  "name": "arkanjs-api",
+  "name": "arkanjs",
   "version": "0.1.0",
   "description": "Modular API generator with RBAC, flexible DB support and CLI integration",
   "main": "src/server.js",
@@ -14,7 +14,7 @@
     "init": "node scripts/initProject.js"
   },
   "keywords": ["express", "sequelize", "rbac", "cli", "generator", "api"],
-  "author": "Iberno & Copilot",
+  "author": "Iberno",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.0",
