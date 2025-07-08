@@ -1,0 +1,10 @@
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/db.js";
+
+export const <%= modelName %> = sequelize.define("<%= tableName %>", {
+<% fields.forEach(field => { %>
+  <%= field.name %>: { type: DataTypes.<%= field.type %>, allowNull: false },
+<% }); %>
+}, {
+  tableName: "<%= tableName %>s"
+});

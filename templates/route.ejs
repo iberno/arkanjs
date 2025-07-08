@@ -1,0 +1,24 @@
+import express from "express";
+import { <%= controllerName %> } from "../controllers/<%= controllerFile %>.js"<% if (auth) { %>;
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { requireRole } from "../middlewares/roleMiddleware.js";<% } %>
+
+const router = express.Router();
+
+<% if (auth) { %>
+// Proteção por JWT + role "dashboard"
+router.post("/", authMiddleware, requireRole("dashboard"), <%= controllerName %>.create);
+router.get("/", authMiddleware, requireRole("dashboard"), <%= controllerName %>.findAll);
+router.get("/:id", authMiddleware, requireRole("dashboard"), <%= controllerName %>.findOne);
+router.put("/:id", authMiddleware, requireRole("dashboard"), <%= controllerName %>.update);
+router.delete("/:id", authMiddleware, requireRole("dashboard"), <%= controllerName %>.remove);
+<% } else { %>
+// Acesso público
+router.post("/", <%= controllerName %>.create);
+router.get("/", <%= controllerName %>.findAll);
+router.get("/:id", <%= controllerName %>.findOne);
+router.put("/:id", <%= controllerName %>.update);
+router.delete("/:id", <%= controllerName %>.remove);
+<% } %>
+
+export default router;

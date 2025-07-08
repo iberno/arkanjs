@@ -1,0 +1,32 @@
+import { <%= modelName %> } from "../models/<%= modelFile %>.js";
+
+export const <%= controllerName %> = {
+  async create(req, res) {
+    try {
+      const record = await <%= modelName %>.create(req.body);
+      res.status(201).json(record);
+    } catch {
+      res.status(500).json({ error: "Erro ao criar <%= resourceName %>" });
+    }
+  },
+  async findAll(req, res) {
+    const records = await <%= modelName %>.findAll();
+    res.json(records);
+  },
+  async findOne(req, res) {
+    const record = await <%= modelName %>.findByPk(req.params.id);
+    record ? res.json(record) : res.status(404).json({ error: "<%= resourceNameCap %> não encontrado" });
+  },
+  async update(req, res) {
+    const record = await <%= modelName %>.findByPk(req.params.id);
+    if (!record) return res.status(404).json({ error: "<%= resourceNameCap %> não encontrado" });
+    await record.update(req.body);
+    res.json(record);
+  },
+  async remove(req, res) {
+    const record = await <%= modelName %>.findByPk(req.params.id);
+    if (!record) return res.status(404).json({ error: "<%= resourceNameCap %> não encontrado" });
+    await record.destroy();
+    res.json({ message: "<%= resourceNameCap %> removido com sucesso" });
+  }
+};
