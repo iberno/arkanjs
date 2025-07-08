@@ -3,7 +3,19 @@ import path from "path";
 import crypto from "crypto";
 import { execSync } from "child_process";
 
-export function initProject({ noDocs = false, nomeProjeto = "arkanjs-api" } = {}) {
+export function initProject({ noDocs = false, nomeProjeto = "arkanjs_api" } = {}) {
+  // 🗂 Define e cria o diretório raiz do projeto
+  const targetDir = path.resolve(process.cwd(), nomeProjeto);
+
+  if (fs.existsSync(targetDir)) {
+    console.log(`❌ Diretório "${nomeProjeto}" já existe. Escolha outro nome ou remova.`);
+    return;
+  }
+
+  fs.mkdirSync(targetDir);
+  process.chdir(targetDir); // 📍 Muda o contexto de trabalho
+
+  // 🧱 Agora sim: cria estrutura dentro da nova pasta
   const dirs = [
     "src",
     "src/config",
@@ -16,11 +28,8 @@ export function initProject({ noDocs = false, nomeProjeto = "arkanjs-api" } = {}
   ];
 
   dirs.forEach((dir) => {
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.mkdirSync(dir, { recursive: true });
   });
-  const targetDir = path.resolve(process.cwd(), nomeProjeto);
-  if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
-  process.chdir(targetDir); // Altera o diretório ativo
 
 
   // 🔐 .env com configuração

@@ -1,6 +1,6 @@
 {
   "name": "@ibernoh/arkanjs",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Backend API generator with RBAC, CLI scaffolding, and built-in structure. Just install and run.",
   "main": "src/server.js",
   "type": "module",
