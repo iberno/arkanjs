@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
+import crypto from "crypto";
 
 export function initProject({ noDocs = false } = {}) {
   const dirs = [
@@ -27,7 +28,7 @@ export function initProject({ noDocs = false } = {}) {
   // 📦 Conexão com banco
   fs.writeFileSync(
     "src/config/db.js",
-`import { Sequelize } from "sequelize";
+    `import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -41,7 +42,7 @@ export const sequelize = new Sequelize({
   // 🚀 Server base
   fs.writeFileSync(
     "src/server.js",
-`import express from "express";
+    `import express from "express";
 import dotenv from "dotenv";
 import { sequelize } from "./config/db.js";
 import router from "./routes/index.js";
@@ -64,7 +65,7 @@ sequelize.sync().then(() => {
   // 🔁 index.js com rotas dinâmicas
   fs.writeFileSync(
     "src/routes/index.js",
-`import express from "express";
+    `import express from "express";
 import fs from "fs";
 import path from "path";
 
@@ -89,7 +90,7 @@ export default router;`
     fs.writeFileSync("Doc.md", `# Documentação ArkanJS\n\nAcesse via /doc`);
     fs.writeFileSync(
       "src/routes/docRoute.js",
-`import express from "express";
+      `import express from "express";
 import fs from "fs";
 import path from "path";
 import { marked } from "marked";
@@ -108,6 +109,31 @@ router.get("/", (req, res) => {
 export default router;`
     );
   }
+
+  function createEnvFile() {
+    const jwtSecret = crypto.randomBytes(32).toString("hex"); // 64 caracteres
+    const envContent = `# 🔧 API Settings
+PORT=3000
+JWT_SECRET=${jwtSecret}
+
+# 🗄️ Database Settings
+DB_DIALECT=sqlite
+DB_STORAGE=database.sqlite
+
+# If using PostgreSQL or MySQL
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=arkan_db
+DB_USER=root
+DB_PASSWORD=admin
+`;
+
+    fs.writeFileSync(".env", envContent);
+    console.log("✅ Arquivo .env criado com sucesso.");
+    console.log(`🔐 JWT gerado: ${jwtSecret.slice(0, 8)}... (oculto para segurança)`);
+  }
+
+  createEnvFile();
 
   // 📦 package.json com dependências básicas
   if (!fs.existsSync("package.json")) {
