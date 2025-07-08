@@ -1,43 +1,96 @@
 #!/usr/bin/env node
 import { program } from "commander";
 import { initProject } from "../scripts/initProject.js";
-import { generateResource } from "../scripts/generateResource.js";
 import { generateAuth } from "../scripts/generateAuth.js";
+import { generateResource } from "../scripts/generateResource.js";
 import { generateResourceAuth } from "../scripts/generateResourceAuth.js";
+import { cleanAuth } from "../scripts/cleanAuth.js";
+import { cleanResourceAuth } from "../scripts/cleanResourceAuth.js";
+import fs from "fs";
+import path from "path";
 
-// 🎯 Comando: init
+program
+  .name("arkanjs")
+  .description("🔥 ArkanJS CLI — vertical framework with JWT and RBAC")
+  .version("1.0.0");
+
+//
+// 🎯 Initialization
+//
 program
   .command("new <name>")
-  .description("Cria projeto ArkanJS com estrutura pronta para uso")
-  .option("--no-docs", "Evita gerar Doc.md e rota /doc")
+  .description("📦 Create a new ArkanJS project")
+  .option("--no-docs", "Skip Doc.md and /doc route")
   .action((name, options) => {
     initProject({ noDocs: options.noDocs, nomeProjeto: name });
   });
 
-// ⚙️ Comando: generate:resource
+//
+// 🚀 Resource Generation
+//
 program
-  .command("generate:resource <name>")
-  .description("Gera model, controller e rota pública para um recurso")
-  .option("--fields <fields>", "Formato: nome:string,ativo:boolean")
+  .command("make:resource <name>")
+  .description("📄 Generate public resource (model, controller and route)")
+  .option("--fields <fields>", "Format: name:string,isActive:boolean")
   .action((name, options) => {
     generateResource(name, options.fields);
   });
 
-// 🔐 Comando: generate:auth
 program
-  .command("generate:auth")
-  .description("Gera sistema completo de autenticação com JWT e controle por cargo (RBAC)")
+  .command("make:resource-auth <name>")
+  .description("🔐 Generate protected resource with JWT + role")
+  .option("--fields <fields>", "Format: title:string,done:boolean")
+  .action((name, options) => {
+    generateResourceAuth(name, options.fields);
+  });
+
+//
+// 🔐 Auth System
+//
+program
+  .command("make:auth")
+  .description("🛡️ Generate full JWT authentication system with RBAC")
   .action(() => {
     generateAuth();
   });
 
-// 🔐 Comando: generate:resource-auth
+//
+// 🧹 Clean Commands
+//
 program
-  .command("generate:resource-auth <name>")
-  .description("Gera recurso protegido por autenticação JWT + cargo")
-  .option("--fields <fields>", "Formato: titulo:string,feito:boolean")
-  .action((name, options) => {
-    generateResourceAuth(name, options.fields);
+  .command("clean:auth")
+  .description("🧨 Remove all authentication files and folders")
+  .action(() => {
+    cleanAuth();
+  });
+
+program
+  .command("clean:resource-auth <name>")
+  .description("🧼 Remove protected resource files and folders")
+  .action((name) => {
+    cleanResourceAuth(name);
+  });
+
+//
+// 🔍 Dynamic List
+//
+program
+  .command("list")
+  .description("📂 List all generated resources")
+  .action(() => {
+    const modelsPath = path.resolve("src/models");
+    if (!fs.existsSync(modelsPath)) return console.log("⚠️ No resources found.");
+
+    const folders = fs.readdirSync(modelsPath).filter(folder => {
+      return folder !== "auth" && fs.statSync(path.join(modelsPath, folder)).isDirectory();
+    });
+
+    if (!folders.length) {
+      console.log("📁 No resources created yet.");
+    } else {
+      console.log("📚 Existing resources:");
+      folders.forEach(name => console.log("  • " + name));
+    }
   });
 
 program.parse(process.argv);

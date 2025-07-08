@@ -1,10 +1,14 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
 
+// 🧬 Modelo: <%= modelName %>
 export const <%= modelName %> = sequelize.define("<%= tableName %>", {
-<% fields.forEach(field => { %>
-  <%= field.name %>: { type: DataTypes.<%= field.type %>, allowNull: false },
-<% }); %>
+<% fields.forEach((field, index) => { -%>
+  <%= field.name %>: {
+    type: DataTypes.<%= field.type %>,
+    allowNull: false
+  }<% if (index < fields.length - 1) { %>,<% } %>
+<% }) -%>
 }, {
   tableName: "<%= tableName %>s"
 });

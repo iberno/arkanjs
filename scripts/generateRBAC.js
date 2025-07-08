@@ -1,7 +1,7 @@
-import { Role } from "../src/roles/Role.js";
-import { Permission } from "../src/permissions/Permission.js";
-import { RolePermission } from "../src/permissions/RolePermission.js";
-import { RoleUser } from "../src/roles/RoleUser.js";
+import { Role } from "../src/models/auth/roleModel.js";
+import { Permission } from "../src/models/auth/permissionModel.js";
+import { RolePermission } from "../src/models/auth/rolePermissionModel.js";
+import { RoleUser } from "../src/models/auth/roleUserModel.js";
 
 export async function generateRBAC() {
   await Role.sync();
@@ -9,5 +9,5 @@ export async function generateRBAC() {
   await RoleUser.sync();
   await RolePermission.sync();
 
-  console.log("✅ Tabelas RBAC criadas com sucesso.");
+  console.log("✅ Tabelas RBAC sincronizadas com sucesso.");
 }

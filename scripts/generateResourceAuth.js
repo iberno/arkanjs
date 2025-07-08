@@ -7,9 +7,18 @@ export function generateResourceAuth(name, fieldsText = "") {
   const controllerName = `${capitalized}Controller`;
   const routeName = `${name}Route`;
 
-  const modelPath = `src/models/${name}Model.js`;
-  const controllerPath = `src/controllers/${name}Controller.js`;
-  const routePath = `src/routes/${routeName}.js`;
+  // 🗂️ Pastas verticais por domínio
+  const modelDir = `src/models/${name}`;
+  const controllerDir = `src/controllers/${name}`;
+  const routeDir = `src/routes/${name}`;
+
+  [modelDir, controllerDir, routeDir].forEach((dir) => {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  });
+
+  const modelPath = `${modelDir}/${name}Model.js`;
+  const controllerPath = `${controllerDir}/${name}Controller.js`;
+  const routePath = `${routeDir}/${routeName}.js`;
 
   // 🔠 Campos do modelo
   const fieldsArray = fieldsText.split(",").filter(Boolean);
@@ -21,8 +30,8 @@ export function generateResourceAuth(name, fieldsText = "") {
   // 🧱 Model
   fs.writeFileSync(
     modelPath,
-    `import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db.js";
+`import { DataTypes } from "sequelize";
+import { sequelize } from "../../config/db.js";
 
 export const ${modelName} = sequelize.define("${name}", {
 ${fieldLines.join("\n")}
@@ -34,15 +43,15 @@ ${fieldLines.join("\n")}
   // ⚙️ Controller
   fs.writeFileSync(
     controllerPath,
-    `import { ${modelName} } from "../models/${name}Model.js";
+`import { ${modelName} } from "../../models/${name}/${name}Model.js";
 
 export const ${controllerName} = {
   async create(req, res) {
     try {
       const record = await ${modelName}.create(req.body);
       res.status(201).json(record);
-    } catch {
-      res.status(500).json({ error: "Erro ao criar ${name}" });
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao criar ${name}", details: err.message });
     }
   },
 
@@ -50,8 +59,8 @@ export const ${controllerName} = {
     try {
       const records = await ${modelName}.findAll();
       res.json(records);
-    } catch {
-      res.status(500).json({ error: "Erro ao buscar ${name}s" });
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao buscar ${name}s", details: err.message });
     }
   },
 
@@ -60,8 +69,8 @@ export const ${controllerName} = {
       const record = await ${modelName}.findByPk(req.params.id);
       if (!record) return res.status(404).json({ error: "${capitalized} não encontrado" });
       res.json(record);
-    } catch {
-      res.status(500).json({ error: "Erro ao buscar ${name}" });
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao buscar ${name}", details: err.message });
     }
   },
 
@@ -71,8 +80,8 @@ export const ${controllerName} = {
       if (!record) return res.status(404).json({ error: "${capitalized} não encontrado" });
       await record.update(req.body);
       res.json(record);
-    } catch {
-      res.status(500).json({ error: "Erro ao atualizar ${name}" });
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao atualizar ${name}", details: err.message });
     }
   },
 
@@ -82,31 +91,31 @@ export const ${controllerName} = {
       if (!record) return res.status(404).json({ error: "${capitalized} não encontrado" });
       await record.destroy();
       res.json({ message: "${capitalized} removido com sucesso" });
-    } catch {
-      res.status(500).json({ error: "Erro ao remover ${name}" });
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao remover ${name}", details: err.message });
     }
   }
 };`
   );
 
-  // 🔐 Rota protegida por JWT + role "dashboard"
+  // 🔐 Rota protegida por JWT + role "admin"
   fs.writeFileSync(
     routePath,
-    `import express from "express";
-import { ${controllerName} } from "../controllers/${name}Controller.js";
-import { authMiddleware } from "../middlewares/authMiddleware.js";
-import { requireRole } from "../middlewares/roleMiddleware.js";
+`import express from "express";
+import { ${controllerName} } from "../../controllers/${name}/${name}Controller.js";
+import { authMiddleware } from "../../middlewares/auth/authMiddleware.js";
+import { requireRole } from "../../middlewares/auth/roleMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, requireRole("dashboard"), ${controllerName}.create);
-router.get("/", authMiddleware, requireRole("dashboard"), ${controllerName}.findAll);
-router.get("/:id", authMiddleware, requireRole("dashboard"), ${controllerName}.findOne);
-router.put("/:id", authMiddleware, requireRole("dashboard"), ${controllerName}.update);
-router.delete("/:id", authMiddleware, requireRole("dashboard"), ${controllerName}.remove);
+router.post("/", authMiddleware, requireRole("admin"), ${controllerName}.create);
+router.get("/", authMiddleware, requireRole("admin"), ${controllerName}.findAll);
+router.get("/:id", authMiddleware, requireRole("admin"), ${controllerName}.findOne);
+router.put("/:id", authMiddleware, requireRole("admin"), ${controllerName}.update);
+router.delete("/:id", authMiddleware, requireRole("admin"), ${controllerName}.remove);
 
 export default router;`
   );
 
-  console.log(`🔐 Recurso ${name} com acesso restrito (role: dashboard) gerado com sucesso.`);
+  console.log(`🔐 Recurso ${name} com acesso restrito (role: admin) gerado em estrutura vertical com sucesso.`);
 }

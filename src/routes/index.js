@@ -4,13 +4,29 @@ import path from "path";
 
 const router = express.Router();
 
-// Carrega todos os arquivos que terminam com Route.js, exceto o próprio index
-const routeFiles = fs.readdirSync(path.resolve("src/routes"))
-  .filter(file => file.endsWith("Route.js") && file !== "index.js");
+// 🔎 Função recursiva para encontrar rotas
+function findRouteFiles(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const files = [];
 
-for (const file of routeFiles) {
-  const routeName = file.replace("Route.js", "");
-  const route = await import(`./${file}`);
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...findRouteFiles(fullPath));
+    } else if (entry.name.endsWith("Route.js")) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
+}
+
+const routeFiles = findRouteFiles(path.resolve("src/routes"));
+
+for (const filePath of routeFiles) {
+  const routeName = path.basename(filePath, "Route.js");
+  const route = await import(filePath);
   router.use(`/${routeName}`, route.default);
 }
 

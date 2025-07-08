@@ -1,32 +1,53 @@
-import { <%= modelName %> } from "../models/<%= modelFile %>.js";
+import { <%= modelName %> } from "../models/<%= domain %>/<%= modelFile %>.js";
 
 export const <%= controllerName %> = {
   async create(req, res) {
     try {
       const record = await <%= modelName %>.create(req.body);
       res.status(201).json(record);
-    } catch {
-      res.status(500).json({ error: "Erro ao criar <%= resourceName %>" });
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao criar <%= resourceName %>", details: err.message });
     }
   },
+
   async findAll(req, res) {
-    const records = await <%= modelName %>.findAll();
-    res.json(records);
+    try {
+      const records = await <%= modelName %>.findAll();
+      res.json(records);
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao listar <%= resourceName %>", details: err.message });
+    }
   },
+
   async findOne(req, res) {
-    const record = await <%= modelName %>.findByPk(req.params.id);
-    record ? res.json(record) : res.status(404).json({ error: "<%= resourceNameCap %> não encontrado" });
+    try {
+      const record = await <%= modelName %>.findByPk(req.params.id);
+      if (!record) return res.status(404).json({ error: "<%= resourceNameCap %> não encontrado" });
+      res.json(record);
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao buscar <%= resourceName %>", details: err.message });
+    }
   },
+
   async update(req, res) {
-    const record = await <%= modelName %>.findByPk(req.params.id);
-    if (!record) return res.status(404).json({ error: "<%= resourceNameCap %> não encontrado" });
-    await record.update(req.body);
-    res.json(record);
+    try {
+      const record = await <%= modelName %>.findByPk(req.params.id);
+      if (!record) return res.status(404).json({ error: "<%= resourceNameCap %> não encontrado" });
+      await record.update(req.body);
+      res.json(record);
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao atualizar <%= resourceName %>", details: err.message });
+    }
   },
+
   async remove(req, res) {
-    const record = await <%= modelName %>.findByPk(req.params.id);
-    if (!record) return res.status(404).json({ error: "<%= resourceNameCap %> não encontrado" });
-    await record.destroy();
-    res.json({ message: "<%= resourceNameCap %> removido com sucesso" });
+    try {
+      const record = await <%= modelName %>.findByPk(req.params.id);
+      if (!record) return res.status(404).json({ error: "<%= resourceNameCap %> não encontrado" });
+      await record.destroy();
+      res.json({ message: "<%= resourceNameCap %> removido com sucesso" });
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao remover <%= resourceName %>", details: err.message });
+    }
   }
 };
