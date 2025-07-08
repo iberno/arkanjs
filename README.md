@@ -1,4 +1,4 @@
-# ⚡ ArkanJS · Modular APIs Generator com RBAC, CLI e Flexible Develpoment.
+# ⚡ ArkanJS · Modular APIs Generator com RBAC, CLI and Flexible Develpoment.
 
 ### ⚡ Arkan is a developer-first CLI tool designed to orchestrate RESTful backends fast — with authentication, RBAC, resource scaffolding, and migration tools ready to go. Built in pure JavaScript with expressive structure and elegant defaults.
 
