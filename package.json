@@ -8,15 +8,14 @@
     "arkan": "./cli/index.js"
   },
   "files": [
-    "src",
-    "cli",
-    "routes",
-    "models",
-    "middlewares",
-    "Doc.md",
-    ".env.template",
-    "README.md"
-  ],
+  "src",
+  "scripts",
+  "cli",
+  "templates",
+  "Doc.md",
+  ".env.template",
+  "README.md"
+],
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
