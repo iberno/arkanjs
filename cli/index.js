@@ -6,6 +6,8 @@ import { generateResource } from "../scripts/generateResource.js";
 import { generateResourceAuth } from "../scripts/generateResourceAuth.js";
 import { cleanAuth } from "../scripts/cleanAuth.js";
 import { cleanResourceAuth } from "../scripts/cleanResourceAuth.js";
+import { execSync } from "child_process";
+import { reverseModels } from "../scripts/reverseModels.js";
 import fs from "fs";
 import path from "path";
 
@@ -69,6 +71,44 @@ program
   .description("🧼 Remove protected resource files and folders")
   .action((name) => {
     cleanResourceAuth(name);
+  });
+
+//
+// 🧱 Database Commands
+//
+program
+  .command("make:migration <name>")
+  .description("📦 Create a new migration file")
+  .action((name) => {
+    execSync(`npx sequelize-cli migration:generate --name ${name}`, { stdio: "inherit" });
+  });
+
+program
+  .command("make:seed <name>")
+  .description("🌱 Create a new seed file")
+  .action((name) => {
+    execSync(`npx sequelize-cli seed:generate --name ${name}`, { stdio: "inherit" });
+  });
+
+program
+  .command("migrate")
+  .description("🧱 Run all pending database migrations")
+  .action(() => {
+    execSync(`npx sequelize-cli db:migrate`, { stdio: "inherit" });
+  });
+
+program
+  .command("seed")
+  .description("🌿 Run all seed files")
+  .action(() => {
+    execSync(`npx sequelize-cli db:seed:all`, { stdio: "inherit" });
+  });
+
+program
+  .command("reverse")
+  .description("📥 Reverse-engineer models from existing database")
+  .action(() => {
+    reverseModels();
   });
 
 //

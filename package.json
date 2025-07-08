@@ -22,7 +22,8 @@
     "generate:auth": "node cli/commands/generateAuth.js",
     "generate:env": "node cli/commands/generateEnv.js",
     "generate:resource": "node cli/commands/generateResource.js",
-    "generate:resource-auth": "node cli/commands/generateResourceAuth.js"
+    "generate:resource-auth": "node cli/commands/generateResourceAuth.js",
+    "reverse": "node scripts/reverseModels.js"
   },
   "keywords": [
     "express",
@@ -48,6 +49,7 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "sequelize-auto": "^0.8.8"
   }
 }
