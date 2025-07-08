@@ -8,6 +8,22 @@ ArkanJS é um gerador de APIs modular com Express + Sequelize, focado em agilida
 - Incluir autenticação via JWT com controle por cargo (RBAC)
 - Gerar documentação técnica automática
 
+🧱 Estrutura de Dados RBAC (Role-Based Access Control)
+|Tabela |	Finalidade |
+____________________________________________________________________________________________
+|users	|Armazena os dados do usuário (nome, email, senha…)                                 |
+|roles	|Define cargos como "admin", "dashboard", "editor", etc                             |
+|permissions	|Ações específicas: "create_task", "delete_user", "view_dashboard", etc     |
+|role_permissions	|Liga cargos às permissões (cada cargo pode ter várias permissões)      |
+|role_users	|Liga usuários aos cargos (um usuário pode ter múltiplos cargos)                |
+
+🔐 Vantagens dessa estrutura
+Flexível: pode criar novos cargos sem alterar o código
+
+Escalável: permite editar permissões de cada cargo de dentro do dashboard
+
+Segura: acessos são controlados por nível e ação, não apenas por “admin”
+
 ## 🔍 Tecnologias utilizadas
 
 | Camada            | Tecnologia                                                                 |

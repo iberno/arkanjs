@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-export function generateResource(name, fieldsText = "") {
+export function generateResourceAuth(name, fieldsText = "") {
   const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
   const modelName = `${capitalized}Model`;
   const controllerName = `${capitalized}Controller`;
@@ -26,7 +26,7 @@ ${fieldLines.join("\n")}
 });`
   );
 
-  // ⚙️ Controller
+  // ⚙️ Controller igual ao resource público
   fs.writeFileSync(
     `src/controllers/${name}Controller.js`,
 `import { ${modelName} } from "../models/${name}Model.js";
@@ -63,22 +63,25 @@ export const ${controllerName} = {
 };`
   );
 
-  // 🛣️ Rota pública
-  fs.writeFileSync(
-    `src/routes/${routeName}.js`,
+// 🔐 Rota protegida por JWT + role "dashboard"
+fs.writeFileSync(
+  `src/routes/${routeName}.js`,
 `import express from "express";
 import { ${controllerName} } from "../controllers/${name}Controller.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { requireRole } from "../middlewares/roleMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", ${controllerName}.create);
-router.get("/", ${controllerName}.findAll);
-router.get("/:id", ${controllerName}.findOne);
-router.put("/:id", ${controllerName}.update);
-router.delete("/:id", ${controllerName}.remove);
+// Proteção: apenas usuários com cargo "dashboard"
+router.post("/", authMiddleware, requireRole("dashboard"), ${controllerName}.create);
+router.get("/", authMiddleware, requireRole("dashboard"), ${controllerName}.findAll);
+router.get("/:id", authMiddleware, requireRole("dashboard"), ${controllerName}.findOne);
+router.put("/:id", authMiddleware, requireRole("dashboard"), ${controllerName}.update);
+router.delete("/:id", authMiddleware, requireRole("dashboard"), ${controllerName}.remove);
 
 export default router;`
-  );
+);
 
-  console.log(`✅ Recurso ${name} gerado com sucesso.`);
+  console.log(`🔐 Recurso ${name} protegido gerado com sucesso.`);
 }
