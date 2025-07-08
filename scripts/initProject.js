@@ -70,7 +70,7 @@ sequelize.sync().then(() => {
     ${noDocs ? "" : "console.log(`📘 Doc: http://localhost:${PORT}/doc`);"}
   });
 });
-`);init
+`);
 
   // 🔁 Roteador principal
   fs.writeFileSync("src/routes/index.js", `import express from "express";
