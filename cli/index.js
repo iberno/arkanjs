@@ -11,13 +11,16 @@ program
   .description("Inicializa servidor Express + Sequelize com estrutura base")
   .option("--install", "Cria arquivos e diretórios iniciais para API limpa")
   .option("--no-docs", "Evita gerar o Doc.md e rota /doc")
+  .option("--name <nome>", "Define o nome do projeto para configurar package.json")
   .action((options) => {
     if (options.install) {
-      initProject({ noDocs: options.noDocs });
+      const nomeProjeto = options.name || "arkanjs-api";
+      initProject({ noDocs: options.noDocs, nomeProjeto });
     } else {
       console.log("ℹ️ Use --install para gerar a estrutura inicial.");
     }
   });
+
 
 // ⚙️ Comando: generate:resource
 program

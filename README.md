@@ -28,6 +28,8 @@ Arkan bridges art and engineering — expressing APIs with finesse and function,
 ---
 
 ## 📦 Installation
+NPM
+npx arkan init --install --name projectName
 
 ```bash
 git clone https://github.com/SEU_USUARIO/arkanjs-api
