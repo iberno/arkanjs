@@ -1,6 +1,6 @@
 {
   "name": "@ibernoh/arkanjs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Modular API generator with RBAC, flexible DB support and CLI integration",
   "main": "src/server.js",
   "type": "module",
