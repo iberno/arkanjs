@@ -18,6 +18,10 @@ export function initProject({ noDocs = false, nomeProjeto = "arkanjs-api" } = {}
   dirs.forEach((dir) => {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   });
+  const targetDir = path.resolve(process.cwd(), nomeProjeto);
+  if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
+  process.chdir(targetDir); // Altera o diretório ativo
+
 
   // 🔐 .env com configuração
   const jwtSecret = crypto.randomBytes(32).toString("hex");
