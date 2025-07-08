@@ -1,22 +1,41 @@
 {
   "name": "@ibernoh/arkanjs",
-  "version": "0.1.2",
-  "description": "Modular API generator with RBAC, flexible DB support and CLI integration",
+  "version": "0.1.3",
+  "description": "Backend API generator with RBAC, CLI scaffolding, and built-in structure. Just install and run.",
   "main": "src/server.js",
   "type": "module",
   "bin": {
     "arkan": "./cli/index.js"
   },
+  "files": [
+    "src",
+    "cli",
+    "routes",
+    "models",
+    "middlewares",
+    "Doc.md",
+    ".env.template",
+    "README.md"
+  ],
   "scripts": {
-    "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "generate:auth": "node scripts/generateAuth.js",
-    "generate:env": "node scripts/generateEnv.js",
-    "generate:resource": "node scripts/generateResource.js",
-    "generate:resource-auth": "node scripts/generateResourceAuth.js",
-    "init": "node scripts/initProject.js"
+    "start": "node src/server.js",
+    "generate:auth": "node cli/commands/generateAuth.js",
+    "generate:env": "node cli/commands/generateEnv.js",
+    "generate:resource": "node cli/commands/generateResource.js",
+    "generate:resource-auth": "node cli/commands/generateResourceAuth.js"
   },
-  "keywords": ["express", "sequelize", "rbac", "cli", "generator", "api"],
+  "keywords": [
+    "express",
+    "sequelize",
+    "rbac",
+    "api-generator",
+    "backend",
+    "cli",
+    "scaffold",
+    "jwt",
+    "automation"
+  ],
   "author": "Iberno Hoffmann",
   "license": "MIT",
   "dependencies": {
@@ -33,4 +52,3 @@
     "nodemon": "^3.1.0"
   }
 }
-
