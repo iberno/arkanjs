@@ -1,0 +1,25 @@
+{
+  "name": "arkanjs",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ArkanJS - Modular APIs generator with Express and Sequelize",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "dotenv": "^16.4.0",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "inquirer": "^9.2.7",
+    "jsonwebtoken": "^9.0.2",
+    "marked": "^9.1.6",
+    "sequelize": "^6.32.1",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "prettier": "^3.2.5"
+  }
+}

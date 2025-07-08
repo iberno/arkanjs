@@ -8,6 +8,21 @@ ArkanJS é um gerador de APIs modular com Express + Sequelize, focado em agilida
 - Incluir autenticação via JWT com controle por cargo (RBAC)
 - Gerar documentação técnica automática
 
+## 🔍 Tecnologias utilizadas
+
+| Camada            | Tecnologia                                                                 |
+|-------------------|------------------------------------------------------------------------------|
+| Server & Routing  | [Express.js](https://expressjs.com/)                                        |
+| ORM               | [Sequelize](https://sequelize.org/)                                         |
+| Autenticação      | [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)                  |
+| CLI & Comandos    | [Commander](https://github.com/tj/commander.js), [Inquirer](https://github.com/SBoudrias/Inquirer.js) |
+| Templates         | [EJS](https://ejs.co/)                                                       |
+| Variáveis .env    | [dotenv](https://github.com/motdotla/dotenv)                                |
+| Utilidades        | Módulos nativos do Node.js (`fs`, `path`)                                   |
+| Formatação Dev    | [Prettier](https://prettier.io/)                                             |
+| Futuro            | [Swagger](https://swagger.io/), [ESLint](https://eslint.org/), OpenAPI Gen  |
+
+
 ## Estrutura inicial
 ```bash
 cli/
