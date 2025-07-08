@@ -1,74 +1,80 @@
-# ArkanJS 🚀
+# ⚡ ArkanJS · Modular APIs Generator com RBAC, CLI e Flexible Develpoment.
 
-ArkanJS é um gerador de APIs modular com Express + Sequelize, focado em agilidade e boas práticas para projetos Node.js.
-
-## Objetivos principais
-- Criar servidores limpos e modulares
-- Gerar recursos (CRUD) rapidamente
-- Incluir autenticação via JWT com controle por cargo (RBAC)
-- Gerar documentação técnica automática
-
-🧱 Estrutura de Dados RBAC (Role-Based Access Control)
-|Tabela |	Finalidade |
-____________________________________________________________________________________________
-|users	|Armazena os dados do usuário (nome, email, senha…)                                 |
-|roles	|Define cargos como "admin", "dashboard", "editor", etc                             |
-|permissions	|Ações específicas: "create_task", "delete_user", "view_dashboard", etc     |
-|role_permissions	|Liga cargos às permissões (cada cargo pode ter várias permissões)      |
-|role_users	|Liga usuários aos cargos (um usuário pode ter múltiplos cargos)                |
-
-🔐 Vantagens dessa estrutura
-Flexível: pode criar novos cargos sem alterar o código
-
-Escalável: permite editar permissões de cada cargo de dentro do dashboard
-
-Segura: acessos são controlados por nível e ação, não apenas por “admin”
-
-## 🔍 Tecnologias utilizadas
-
-| Camada            | Tecnologia                                                                 |
-|-------------------|------------------------------------------------------------------------------|
-| Server & Routing  | [Express.js](https://expressjs.com/)                                        |
-| ORM               | [Sequelize](https://sequelize.org/)                                         |
-| Autenticação      | [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)                  |
-| CLI & Comandos    | [Commander](https://github.com/tj/commander.js), [Inquirer](https://github.com/SBoudrias/Inquirer.js) |
-| Templates         | [EJS](https://ejs.co/)                                                       |
-| Variáveis .env    | [dotenv](https://github.com/motdotla/dotenv)                                |
-| Utilidades        | Módulos nativos do Node.js (`fs`, `path`)                                   |
-| Formatação Dev    | [Prettier](https://prettier.io/)                                             |
-| Futuro            | [Swagger](https://swagger.io/), [ESLint](https://eslint.org/), OpenAPI Gen  |
-
-
-## Estrutura inicial
-```bash
-cli/
-src/
- ├─ config/
- ├─ controllers/
- ├─ models/
- ├─ routes/
- ├─ middlewares/
- ├─ roles/
- ├─ permissions/
-scripts/
-templates/
-.env
-package.json
-
-Comandos (serão ativados em breve)
-arkan init --install [--no-docs]
-arkan generate:resource <nome> --fields
-arkan generate:auth
-arkan generate:resource-auth <nome> --fields
-
+### ⚡ Arkan is a developer-first CLI tool designed to orchestrate RESTful backends fast — with authentication, RBAC, resource scaffolding, and migration tools ready to go. Built in pure JavaScript with expressive structure and elegant defaults.
 
 ---
 
-## 🔜 Etapa 2 — Preparar `cli/index.js` e `initProject.js`
+## 📖 The Origin of the Name
 
-Você já tem o `cli/index.js` vazio. Posso te enviar agora os blocos certos pra inicializar o projeto com `arkan init --install`, incluindo a criação automática de arquivos, documentação e dependências.
+> "Arkan" is a fusion of two inspirations:  
+> 🎼 **Charles-Valentin Alkan**, a French composer known for crafting some of the most technically demanding and intricate pieces of solo piano music — a symbol of mastery, depth, and complexity.  
+> 🦇 And the **Arkham City** universe from comic lore, evoking a gritty, modular and layered feel — much like backend architecture.
 
-Me avisa e eu te entrego em seguida o `scripts/initProject.js` já com suporte à flag `--no-docs` e estrutura pronta pra iniciar o servidor.
+Arkan bridges art and engineering — expressing APIs with finesse and function, like a digital symphony performed in terminal.
 
-Estamos no ritmo certo — do zero, limpo e no controle 🎯  
-Tamo na batida!
+---
+
+## 🚀 Resources
+
+- Authentication with JWT
+- Access control via roles and permissions (RBAC)
+- Integrated CLI (generate:auth, generate:resource, generate:env)
+- Dynamic .env environment with random JWT_SECRET
+- Full support for SQLite, PostgreSQL, MySQL, and MongoDB
+- EJS templates for automatic code generation
+- Markdown documentation served through the browser (/doc)
+- Modular and ready to scale
+
+---
+
+## 📦 Installation
+
+```bash
+git clone https://github.com/SEU_USUARIO/arkanjs-api
+cd arkanjs-api
+npm install
+npm run init
+🔧 Development Kit
+bash
+npm run generate:env --sqlite
+npm run generate:env --postgresql
+Isso cria .env com segredo JWT e configurações de banco.
+
+🔐 Auth Generator RBAC
+bash
+npm run generate:auth
+Cria automaticamente:
+
+Usuário: admin@arkan.dev
+Senha: secret
+Cargo: dashboard
+Permissão: manage_users
+Rota pública: POST /login
+
+✨ Create Resources
+bash
+npm run generate:resource produto --fields nome:string,preco:float
+npm run generate:resource-auth tarefa --fields titulo:string,feito:boolean
+Gera models, controllers, rotas e protege acesso com base no cargo do usuário.
+
+📄 Interative Documentation
+Acesse no navegador:
+
+http://localhost:3000/doc
+View the contents of Doc.md with HTML rendering by marked.
+
+🧰 Technologies Used
+Camada	Tecnologia
+Servidor	Express.js
+ORM	Sequelize
+Autenticação	JWT + Bcrypt
+CLI	Commander, Inquirer (planejado)
+Templates	EJS
+Ambiente	dotenv
+Markdown Viewer	marked
+
+📝 License
+MIT © 2025 - Iberno Hoffmann
+
+ArkanJS was born from the idea that generating code isn’t enough. You need to generate structure, security, and meaning. If you enjoy elegant and flexible backend development, this is your foundation. Built with 💙, Classical Music, and architecture.
+
