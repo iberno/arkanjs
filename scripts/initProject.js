@@ -22,9 +22,7 @@ export function initProject({ noDocs = false, nomeProjeto = "arkanjs_api" } = {}
     "src/controllers",
     "src/models",
     "src/routes",
-    "src/middlewares",
-    "src/roles",
-    "src/permissions"
+    "src/middlewares"
   ];
 
   dirs.forEach((dir) => {

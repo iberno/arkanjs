@@ -1,33 +1,29 @@
 import fs from "fs";
 import path from "path";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import { sequelize } from "../src/config/db.js";
-dotenv.config();
 
-export async function generateAuth() {
-  const base = "src/models/auth";
-  const authPaths = {
-    models: base,
-    controllers: "src/controllers/auth",
-    middlewares: "src/middlewares/auth",
-    routes: "src/routes/auth"
-  };
+// 📍 Base real do projeto onde o comando está sendo executado
+const projectRoot = process.cwd();
+const baseModel = path.join(projectRoot, "src/models/auth");
+const authPaths = {
+  models: baseModel,
+  controllers: path.join(projectRoot, "src/controllers/auth"),
+  middlewares: path.join(projectRoot, "src/middlewares/auth"),
+  routes: path.join(projectRoot, "src/routes/auth")
+};
 
-  Object.values(authPaths).forEach(dir => {
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  });
+Object.values(authPaths).forEach(dir => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+});
 
-  // 👤 UserModel
-  fs.writeFileSync(`${base}/userModel.js`, `import { DataTypes } from "sequelize";
+// 👤 userModel.js
+fs.writeFileSync(`${baseModel}/userModel.js`, `import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db.js";
 import { RoleModel } from "./roleModel.js";
 
 export const UserModel = sequelize.define("User", {
   email: { type: DataTypes.STRING, unique: true, allowNull: false },
   password: { type: DataTypes.STRING, allowNull: false },
-  is_active: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true }
+  is_active: { type: DataTypes.BOOLEAN, defaultValue: true }
 }, { tableName: "users" });
 
 UserModel.belongsToMany(RoleModel, {
@@ -35,11 +31,10 @@ UserModel.belongsToMany(RoleModel, {
   foreignKey: "user_id",
   otherKey: "role_id",
   as: "roles"
-});
-`);
+});`);
 
-  // 🔒 RoleModel
-  fs.writeFileSync(`${base}/roleModel.js`, `import { DataTypes } from "sequelize";
+// 🔒 roleModel.js
+fs.writeFileSync(`${baseModel}/roleModel.js`, `import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db.js";
 import { UserModel } from "./userModel.js";
 import { PermissionModel } from "./permissionModel.js";
@@ -60,11 +55,10 @@ RoleModel.belongsToMany(PermissionModel, {
   foreignKey: "role_id",
   otherKey: "permission_id",
   as: "permissions"
-});
-`);
+});`);
 
-  // 🔑 PermissionModel
-  fs.writeFileSync(`${base}/permissionModel.js`, `import { DataTypes } from "sequelize";
+// 🔑 permissionModel.js
+fs.writeFileSync(`${baseModel}/permissionModel.js`, `import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db.js";
 import { RoleModel } from "./roleModel.js";
 
@@ -77,11 +71,10 @@ PermissionModel.belongsToMany(RoleModel, {
   foreignKey: "permission_id",
   otherKey: "role_id",
   as: "roles"
-});
-`);
+});`);
 
-  // 🔗 RoleUserModel
-  fs.writeFileSync(`${base}/roleUserModel.js`, `import { DataTypes } from "sequelize";
+// 🔗 roleUserModel.js
+fs.writeFileSync(`${baseModel}/roleUserModel.js`, `import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db.js";
 import { RoleModel } from "./roleModel.js";
 
@@ -90,11 +83,10 @@ export const RoleUserModel = sequelize.define("RoleUser", {
   role_id: { type: DataTypes.INTEGER, allowNull: false }
 }, { tableName: "role_users" });
 
-RoleUserModel.belongsTo(RoleModel, { foreignKey: "role_id", as: "role" });
-`);
+RoleUserModel.belongsTo(RoleModel, { foreignKey: "role_id", as: "role" });`);
 
-  // 🔗 RolePermissionModel
-  fs.writeFileSync(`${base}/rolePermissionModel.js`, `import { DataTypes } from "sequelize";
+// 🔗 rolePermissionModel.js
+fs.writeFileSync(`${baseModel}/rolePermissionModel.js`, `import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db.js";
 import { RoleModel } from "./roleModel.js";
 import { PermissionModel } from "./permissionModel.js";
@@ -105,11 +97,10 @@ export const RolePermissionModel = sequelize.define("RolePermission", {
 }, { tableName: "role_permissions" });
 
 RolePermissionModel.belongsTo(RoleModel, { foreignKey: "role_id" });
-RolePermissionModel.belongsTo(PermissionModel, { foreignKey: "permission_id" });
-`);
+RolePermissionModel.belongsTo(PermissionModel, { foreignKey: "permission_id" });`);
 
-  // 🛡️ authMiddleware.js
-  fs.writeFileSync(`${authPaths.middlewares}/authMiddleware.js`, `import jwt from "jsonwebtoken";
+// 🛡️ authMiddleware.js
+fs.writeFileSync(`${authPaths.middlewares}/authMiddleware.js`, `import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -123,11 +114,10 @@ export function authMiddleware(req, res, next) {
   } catch (err) {
     res.status(403).json({ error: "Token inválido ou expirado", details: err.message });
   }
-}
-`);
+}`);
 
-  // 🛡️ roleMiddleware.js
-  fs.writeFileSync(`${authPaths.middlewares}/roleMiddleware.js`, `import { RoleUserModel } from "../../models/auth/roleUserModel.js";
+// 🛡️ roleMiddleware.js
+fs.writeFileSync(`${authPaths.middlewares}/roleMiddleware.js`, `import { RoleUserModel } from "../../models/auth/roleUserModel.js";
 import { RolePermissionModel } from "../../models/auth/rolePermissionModel.js";
 import { PermissionModel } from "../../models/auth/permissionModel.js";
 
@@ -169,11 +159,10 @@ export function requirePermission(permissionName) {
 
     next();
   };
-}
-`);
+}`);
 
-  // 🎯 authController.js
-  fs.writeFileSync(`${authPaths.controllers}/authController.js`, `import { UserModel } from "../../models/auth/userModel.js";
+// 🎯 authController.js
+fs.writeFileSync(`${authPaths.controllers}/authController.js`, `import { UserModel } from "../../models/auth/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -194,44 +183,17 @@ export const authController = {
 
     res.json({ token });
   }
-};
-`);
+};`);
 
-  // 🌐 authRoute.js
-  fs.writeFileSync(`${authPaths.routes}/authRoute.js`, `import express from "express";
+// 🌐 authRoute.js
+fs.writeFileSync(`${authPaths.routes}/authRoute.js`, `import express from "express";
 import { authController } from "../../controllers/auth/authController.js";
 
 const router = express.Router();
 router.post("/login", authController.login);
 
-export default router;
-`);
+export default router;`);
 
-  // 🌱 Seeds iniciais
-  const { UserModel } = await import("../src/models/auth/userModel.js");
-  const { RoleModel } = await import("../src/models/auth/roleModel.js");
-  const { PermissionModel } = await import("../src/models/auth/permissionModel.js");
-  const { RoleUserModel } = await import("../src/models/auth/roleUserModel.js");
-  const { RolePermissionModel } = await import("../src/models/auth/rolePermissionModel.js");
-
-  await sequelize.sync();
-
-  const [adminUser] = await UserModel.findOrCreate({
-    where: { email: "admin@arkan.dev" },
-    defaults: {
-      password: await bcrypt.hash("secret", 10),
-      is_active: true
-    }
-  });
-
-  const [dashboardRole] = await RoleModel.findOrCreate({ where: { name: "dashboard" } });
-  const [managePermission] = await PermissionModel.findOrCreate({ where: { name: "manage_users" } });
-
-  await RoleUserModel.findOrCreate({ where: { user_id: adminUser.id, role_id: dashboardRole.id } });
-  await RolePermissionModel.findOrCreate({ where: { role_id: dashboardRole.id, permission_id: managePermission.id } });
-
-  console.log("\n✅ Sistema de autenticação RBAC gerado com sucesso.");
-  console.log("📂 Estrutura: models/auth/, controllers/auth/, middlewares/auth/, routes/auth/");
-  console.log("👤 Usuário: admin@arkan.dev | Senha: secret");
-  console.log("🔓 Rota pública disponível: POST /auth/login\n");
-}
+console.log("\n✅ Autenticação RBAC estruturada com sucesso.");
+console.log("📂 Diretórios: models/auth/, controllers/auth/, middlewares/auth/, routes/auth/");
+console.log("🛡️ Para aplicar seed inicial, execute: node scripts/seedAuth.js\n");
