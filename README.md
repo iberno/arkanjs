@@ -1,82 +1,116 @@
-# ⚡ ArkanJS · Modular APIs Generator com RBAC, CLI and Flexible Develpoment.
+ArkanJS — Modular APIs Generator com RBAC
+markdown
+# ⚡ ArkanJS · Modular API Generator com RBAC, CLI e Desenvolvimento Vertical
 
-### ⚡ Arkan is a developer-first CLI tool designed to orchestrate RESTful backends fast — with authentication, RBAC, resource scaffolding, and migration tools ready to go. Built in pure JavaScript with expressive structure and elegant defaults.
-
----
-
-## 📖 The Origin of the Name
-
-> "Arkan" is a fusion of two inspirations:  
-> 🎼 **Charles-Valentin Alkan**, a French composer known for crafting some of the most technically demanding and intricate pieces of solo piano music — a symbol of mastery, depth, and complexity.  
-> 🦇 And the **Arkham City** universe from comic lore, evoking a gritty, modular and layered feel — much like backend architecture.
-
-Arkan bridges art and engineering — expressing APIs with finesse and function, like a digital symphony performed in terminal.
+ArkanJS é uma ferramenta de linha de comando (CLI) voltada para desenvolvedores que desejam construir backends expressivos e seguros com rapidez. Oferece suporte completo para autenticação com JWT, controle de acesso via papéis e permissões (RBAC), geração automatizada de recursos e documentação interativa.
 
 ---
 
-## 🚀 Resources
+## 🔐 Autenticação com RBAC
 
-- Authentication with JWT
-- Access control via roles and permissions (RBAC)
-- Integrated CLI (generate:auth, generate:resource, generate:env)
-- Dynamic .env environment with random JWT_SECRET
-- Full support for SQLite, PostgreSQL, MySQL, and MongoDB
-- EJS templates for automatic code generation
-- Markdown documentation served through the browser (/doc)
-- Modular and ready to scale
+O sistema de autenticação do ArkanJS utiliza JWT combinado com RBAC (Role-Based Access Control), permitindo que usuários possuam múltiplos cargos e que cada cargo tenha permissões específicas atribuídas.
+
+### Estrutura relacional
+
+- `users` — usuários com campos como email, senha, is_active
+- `roles` — cargos: admin, editor, viewer...
+- `permissions` — ações como `create_user`, `edit_task`, etc.
+- `role_users` — ponte entre usuários e cargos (N:N)
+- `role_permissions` — ponte entre cargos e permissões (N:N)
+
+### Middlewares disponíveis
+
+- `authMiddleware` — valida token JWT
+- `requireRole("admin")` — exige cargo específico
+- `requirePermission("edit_user")` — exige permissão específica
 
 ---
 
-## 📦 Installation
-NPM
-npx arkan init --install --name projectName
+## 📦 Instalação
 
 ```bash
 git clone https://github.com/iberno/arkanjs
 cd arkanjs
 npm install
 npm run init
-🔧 Development Kit
-bash
-npm run generate:env --sqlite
-npm run generate:env --postgresql
-Isso cria .env com segredo JWT e configurações de banco.
-
-🔐 Auth Generator RBAC
+⚙️ Geradores disponíveis
+🔒 generate:auth
 bash
 npm run generate:auth
 Cria automaticamente:
 
-Usuário: admin@arkan.dev
-Senha: secret
-Cargo: dashboard
-Permissão: manage_users
-Rota pública: POST /login
+Models: User, Role, Permission, role_users, role_permissions
 
-✨ Create Resources
+Middlewares: autenticação e proteção RBAC
+
+Rota pública: POST /auth/login
+
+Usuário inicial: admin@arkan.dev com cargo admin e permissão manage_users
+
+✨ generate:resource-auth
 bash
-npm run generate:resource produto --fields nome:string,preco:float
 npm run generate:resource-auth tarefa --fields titulo:string,feito:boolean
-Gera models, controllers, rotas e protege acesso com base no cargo do usuário.
+Gera estrutura completa para recurso protegido por RBAC:
 
-📄 Interative Documentation
-Acesse no navegador:
+CRUD vertical com controller, model e rota
 
+Proteção por cargo "admin" e permissões automáticas (create_tarefa, read_tarefa, etc.)
+
+🧱 Banco e Migrations
+Rodar migrations e seeds
+bash
+arkanjs migrate
+arkanjs seed
+O seed inicial garante que o sistema tenha:
+
+Um usuário ativo
+
+A role "admin" pré-criada
+
+Permissões básicas
+
+Relacionamentos configurados
+
+🗂️ Estrutura de diretórios
+src/
+  models/
+    auth/         → estrutura de autenticação + RBAC
+    tarefa/       → exemplo de recurso protegido
+  controllers/
+  middlewares/
+  routes/
+🔑 Uso básico da API
+Login
+http
+POST /auth/login
+Body: {
+  "email": "admin@arkan.dev",
+  "password": "secret123"
+}
+Rota protegida
+http
+GET /tarefa/
+Headers:
+  Authorization: Bearer <token>
+→ Protegida por cargo "admin" e permissão "read_tarefa"
+📝 Documentação interativa
+bash
 http://localhost:3000/doc
-View the contents of Doc.md with HTML rendering by marked.
+Serve o conteúdo Markdown do arquivo Doc.md renderizado em HTML para consulta via navegador.
 
-🧰 Technologies Used
+💙 Filosofia do ArkanJS
+"Mais que gerar código, o ArkanJS cria estrutura, segurança e significado."
+
+Com base modular, fluxo vertical e RBAC embutido, o ArkanJS nasceu pra escalar — seja pra criar um MVP rápido ou um painel administrativo completo.
+
+🔧 Tecnologias
 Camada	Tecnologia
 Servidor	Express.js
 ORM	Sequelize
 Autenticação	JWT + Bcrypt
-CLI	Commander, Inquirer (planejado)
+CLI Generator	Commander
 Templates	EJS
 Ambiente	dotenv
-Markdown Viewer	marked
-
-📝 License
-MIT © 2025 - Iberno Hoffmann
-
-ArkanJS was born from the idea that generating code isn’t enough. You need to generate structure, security, and meaning. If you enjoy elegant and flexible backend development, this is your foundation. Built with 💙, Classical Music, and architecture.
-
+Documentação	marked
+📝 Licença
+MIT © 2025 — Iberno Hoffmann ArkanJS nasceu da ideia de que backends merecem elegância. Construído com 💙, música clássica e arquitetura digital.
