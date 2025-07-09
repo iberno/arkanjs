@@ -1,6 +1,6 @@
-import express from "express";
-import fs from "fs";
-import path from "path";
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
 
 const router = express.Router();
 
@@ -26,8 +26,9 @@ const routeFiles = findRouteFiles(path.resolve("src/routes"));
 
 for (const filePath of routeFiles) {
   const routeName = path.basename(filePath, "Route.js");
-  const route = await import(filePath);
-  router.use(`/${routeName}`, route.default);
+  // Remove the .js extension for require
+  const route = require(filePath.replace(/\.js$/, ''));
+  router.use(`/${routeName}`, route.default || route); // Handle both default and non-default exports
 }
 
-export default router;
+module.exports = router;

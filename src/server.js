@@ -1,7 +1,8 @@
-import express from "express";
-import dotenv from "dotenv";
-import { sequelize } from "./config/db.js";
-import router from "./routes/index.js";
+const express = require("express");
+const dotenv = require("dotenv");
+const { sequelize } = require("./config/db");
+const router = require("./routes/index");
+require("./models/auth/associations"); // Import associations
 
 dotenv.config();
 const app = express();

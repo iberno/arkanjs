@@ -29,47 +29,64 @@ O sistema de autenticação do ArkanJS utiliza JWT combinado com RBAC (Role-Base
 ## 📦 Instalação
 
 ```bash
-git clone https://github.com/iberno/arkanjs
-cd arkanjs
-npm install
-npm run init
-⚙️ Geradores disponíveis
-🔒 generate:auth
-bash
-npm run generate:auth
+npm install @ibernoh/arkanjs
+```
+
+## 🚀 Uso
+
+Após a instalação, você pode usar o ArkanJS CLI para gerar a estrutura inicial do seu projeto.
+
+### Inicialização
+
+Para iniciar um novo projeto, execute os seguintes comandos:
+
+```bash
+npx arkanjs generate:env
+npx arkanjs generate:auth
+```
+
+O comando `generate:env` cria o arquivo `.env` com as variáveis de ambiente necessárias, e o `generate:auth` cria toda a estrutura de autenticação e RBAC.
+
+### Geradores disponíveis
+
+
+🔒 `generate:auth`
+
 Cria automaticamente:
 
-Models: User, Role, Permission, role_users, role_permissions
+- Models: User, Role, Permission, role_users, role_permissions
+- Middlewares: autenticação e proteção RBAC
+- Rota pública: POST /auth/login
+- Usuário inicial: admin@arkan.dev com cargo admin e permissão manage_users
 
-Middlewares: autenticação e proteção RBAC
 
-Rota pública: POST /auth/login
+✨ `generate:resource-auth`
 
-Usuário inicial: admin@arkan.dev com cargo admin e permissão manage_users
+```bash
+npx arkanjs generate:resource-auth tarefa --fields titulo:string,feito:boolean
+```
 
-✨ generate:resource-auth
-bash
-npm run generate:resource-auth tarefa --fields titulo:string,feito:boolean
 Gera estrutura completa para recurso protegido por RBAC:
 
-CRUD vertical com controller, model e rota
+- CRUD vertical com controller, model e rota
+- Proteção por cargo "admin" e permissões automáticas (create_tarefa, read_tarefa, etc.)
 
-Proteção por cargo "admin" e permissões automáticas (create_tarefa, read_tarefa, etc.)
 
 🧱 Banco e Migrations
-Rodar migrations e seeds
-bash
-arkanjs migrate
-arkanjs seed
+
+Para rodar as migrations e seeds, utilize os comandos:
+
+```bash
+npx arkanjs migrate
+npx arkanjs seed
+```
+
 O seed inicial garante que o sistema tenha:
 
-Um usuário ativo
-
-A role "admin" pré-criada
-
-Permissões básicas
-
-Relacionamentos configurados
+- Um usuário ativo
+- A role "admin" pré-criada
+- Permissões básicas
+- Relacionamentos configurados
 
 🗂️ Estrutura de diretórios
 src/
@@ -114,3 +131,122 @@ Ambiente	dotenv
 Documentação	marked
 📝 Licença
 MIT © 2025 — Iberno Hoffmann ArkanJS nasceu da ideia de que backends merecem elegância. Construído com 💙, música clássica e arquitetura digital.
+
+## ⚙️ Referência de Comandos CLI
+
+### `arkanjs new <name>`
+
+📦 Cria um novo projeto ArkanJS.
+
+**Opções:**
+- `--no-docs`: Pula a criação do arquivo `Doc.md` e da rota `/doc`.
+
+**Exemplo:**
+```bash
+arkanjs new my-new-project --no-docs
+```
+
+### `arkanjs make:resource <name>`
+
+📄 Gera um recurso público (model, controller e rota).
+
+**Opções:**
+- `--fields <fields>`: Define os campos do modelo no formato `nome:tipo,outroNome:outroTipo`.
+
+**Exemplo:**
+```bash
+arkanjs make:resource product --fields name:string,price:float,inStock:boolean
+```
+
+### `arkanjs make:resource-auth <name>`
+
+🔐 Gera um recurso protegido por JWT e controle de acesso baseado em papéis (RBAC).
+
+**Opções:**
+- `--fields <fields>`: Define os campos do modelo no formato `titulo:string,feito:boolean`.
+
+**Exemplo:**
+```bash
+arkanjs make:resource-auth task --fields title:string,completed:boolean
+```
+
+### `arkanjs make:auth`
+
+🛡️ Gera um sistema completo de autenticação JWT com RBAC.
+
+**Exemplo:**
+```bash
+arkanjs make:auth
+```
+
+### `arkanjs clean:auth`
+
+🧨 Remove todos os arquivos e pastas relacionados ao sistema de autenticação.
+
+**Exemplo:**
+```bash
+arkanjs clean:auth
+```
+
+### `arkanjs clean:resource-auth <name>`
+
+🧼 Remove os arquivos e pastas de um recurso protegido.
+
+**Exemplo:**
+```bash
+arkanjs clean:resource-auth task
+```
+
+### `arkanjs make:migration <name>`
+
+📦 Cria um novo arquivo de migração para o banco de dados.
+
+**Exemplo:**
+```bash
+arkanjs make:migration add_users_table
+```
+
+### `arkanjs make:seed <name>`
+
+🌱 Cria um novo arquivo de seed para o banco de dados.
+
+**Exemplo:**
+```bash
+arkanjs make:seed initial_admin_user
+```
+
+### `arkanjs migrate`
+
+🧱 Executa todas as migrações pendentes no banco de dados.
+
+**Exemplo:**
+```bash
+arkanjs migrate
+```
+
+### `arkanjs seed`
+
+🌿 Executa todos os arquivos de seed no banco de dados.
+
+**Exemplo:**
+```bash
+arkanjs seed
+```
+
+### `arkanjs reverse`
+
+📥 Realiza engenharia reversa de modelos a partir de um banco de dados existente.
+
+**Exemplo:**
+```bash
+arkanjs reverse
+```
+
+### `arkanjs list`
+
+📂 Lista todos os recursos gerados no projeto.
+
+**Exemplo:**
+```bash
+arkanjs list
+```

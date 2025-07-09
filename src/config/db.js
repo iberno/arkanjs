@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
+const { Sequelize } = require("sequelize");
+const dotenv = require("dotenv");
 dotenv.config();
 
 const dialect = process.env.DB_DIALECT || "sqlite";
@@ -23,4 +23,4 @@ const sequelize = new Sequelize(
       }
 );
 
-export { sequelize };
+module.exports = { sequelize };
