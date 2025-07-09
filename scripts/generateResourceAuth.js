@@ -7,7 +7,6 @@ export function generateResourceAuth(name, fieldsText = "") {
   const controllerName = `${capitalized}Controller`;
   const routeName = `${name}Route`;
 
-  // 🗂️ Pastas verticais por domínio
   const modelDir = `src/models/${name}`;
   const controllerDir = `src/controllers/${name}`;
   const routeDir = `src/routes/${name}`;
@@ -20,30 +19,26 @@ export function generateResourceAuth(name, fieldsText = "") {
   const controllerPath = `${controllerDir}/${name}Controller.js`;
   const routePath = `${routeDir}/${routeName}.js`;
 
-  // 🔠 Campos do modelo
   const fieldsArray = fieldsText.split(",").filter(Boolean);
   const fieldLines = fieldsArray.map((field) => {
     const [key, type] = field.split(":");
     return `  ${key}: { type: DataTypes.${type?.toUpperCase() || "STRING"}, allowNull: false },`;
   });
 
-  // 🧱 Model
-  fs.writeFileSync(
-    modelPath,
-`import { DataTypes } from "sequelize";
+  // 🧱 Model (inclui is_active e possibilidade de associação futura)
+  fs.writeFileSync(modelPath, `import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db.js";
 
 export const ${modelName} = sequelize.define("${name}", {
 ${fieldLines.join("\n")}
+  is_active: { type: DataTypes.BOOLEAN, defaultValue: true }
 }, {
   tableName: "${name}s"
-});`
-  );
+});
+`);
 
-  // ⚙️ Controller
-  fs.writeFileSync(
-    controllerPath,
-`import { ${modelName} } from "../../models/${name}/${name}Model.js";
+  // ⚙️ Controller com CRUD completo
+  fs.writeFileSync(controllerPath, `import { ${modelName} } from "../../models/${name}/${name}Model.js";
 
 export const ${controllerName} = {
   async create(req, res) {
@@ -95,27 +90,23 @@ export const ${controllerName} = {
       res.status(500).json({ error: "Erro ao remover ${name}", details: err.message });
     }
   }
-};`
-  );
+};`);
 
-  // 🔐 Rota protegida por JWT + role "admin"
-  fs.writeFileSync(
-    routePath,
-`import express from "express";
+  // 🔐 Rota protegida com role e permission
+  fs.writeFileSync(routePath, `import express from "express";
 import { ${controllerName} } from "../../controllers/${name}/${name}Controller.js";
 import { authMiddleware } from "../../middlewares/auth/authMiddleware.js";
-import { requireRole } from "../../middlewares/auth/roleMiddleware.js";
+import { requireRole, requirePermission } from "../../middlewares/auth/roleMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, requireRole("admin"), ${controllerName}.create);
-router.get("/", authMiddleware, requireRole("admin"), ${controllerName}.findAll);
-router.get("/:id", authMiddleware, requireRole("admin"), ${controllerName}.findOne);
-router.put("/:id", authMiddleware, requireRole("admin"), ${controllerName}.update);
-router.delete("/:id", authMiddleware, requireRole("admin"), ${controllerName}.remove);
+router.post("/", authMiddleware, requireRole("admin"), requirePermission("create_${name}"), ${controllerName}.create);
+router.get("/", authMiddleware, requireRole("admin"), requirePermission("read_${name}"), ${controllerName}.findAll);
+router.get("/:id", authMiddleware, requireRole("admin"), requirePermission("read_${name}"), ${controllerName}.findOne);
+router.put("/:id", authMiddleware, requireRole("admin"), requirePermission("update_${name}"), ${controllerName}.update);
+router.delete("/:id", authMiddleware, requireRole("admin"), requirePermission("delete_${name}"), ${controllerName}.remove);
 
-export default router;`
-  );
+export default router;`);
 
-  console.log(`🔐 Recurso ${name} com acesso restrito (role: admin) gerado em estrutura vertical com sucesso.`);
+  console.log(`🔐 Recurso ${name} gerado com proteção de role + permission`);
 }
